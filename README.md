@@ -24,13 +24,32 @@ Este entregable incluye:
 
 
 
-## Instalacion 
+## Instalación
 
-### 1. Levantar la base de datos
+### Opción 1: Docker 
 
+Para dockerizar todo el proyecto:
 
-### docker compose up -d
+```bash
+# Construir y levantar ambos servicios (BD + App)
+docker compose up -d --build
 
+# Ver logs de la aplicación
+docker compose logs -f app
+
+# Detener servicios
+docker compose down
+```
+
+La aplicación estará disponible en: `http://localhost:8080`
+
+### Opción 2: Desarrollo 
+
+### 1. Levantar solo la base de datos
+
+```bash
+docker compose up db -d
+```
 
 Esto creará un contenedor PostgreSQL con:
 - Usuario: `cineclub_user`
@@ -44,7 +63,6 @@ Esto creará un contenedor PostgreSQL con:
 ./mvnw spring-boot:run
 ```
 
-La aplicación estará disponible en: `http://localhost:8080`
 
 ##  Endpoints 
 ### Películas (`/api/movies`)
@@ -85,13 +103,13 @@ La aplicación estará disponible en: `http://localhost:8080`
 - `PUT /api/screenings/{id}` - Actualizar función
 - `DELETE /api/screenings/{id}` - Eliminar función
 
-## Postman
+## Ejemplos de Uso
 
 ### 1. Crear una Película
 
 ```json
 POST http://localhost:8080/api/movies
-Content-Type: application/json
+
 
 {
   "titulo": "The Dark Knight",
@@ -106,7 +124,7 @@ Content-Type: application/json
 
 ```json
 POST http://localhost:8080/api/rooms
-Content-Type: application/json
+
 
 {
   "nombre": "Sala 1",
@@ -118,7 +136,7 @@ Content-Type: application/json
 
 ```json
 POST http://localhost:8080/api/rooms/1/seats
-Content-Type: application/json
+
 
 {
   "filaLabel": "A",
@@ -130,7 +148,7 @@ Content-Type: application/json
 
 ```json
 POST http://localhost:8080/api/screenings
-Content-Type: application/json
+
 
 {
   "peliculaId": 1,
@@ -154,10 +172,33 @@ Para ver cobertura de tests:
 ./mvnw test jacoco:report
 ```
 
-
+##  Comandos Docker 
 
 ```bash
-# Limpiar y recrear la base de datos
-docker-compose down -v
-docker-compose up -d
+# Construir solo la imagen de la app
+docker build -t cineclub-app .
+
+# Ver logs de la aplicación
+docker compose logs -f app
+
+# Reiniciar solo la aplicación
+docker compose restart app
+
+# Entrar al contenedor de la BD
+docker exec -it cineclub-db psql -U cineclub_user -d cineclub_db
+
+# Ver estado de los contenedores
+docker compose ps
+
+# Limpiar y recrear todo
+docker compose down -v
+docker compose up -d --build
 ```
+# Para finalizar se puede hacer 
+ primero 
+ 
+### docker compose down
+segundo 
+
+### docker compose up -d --build 
+y ya se podra probar toda la app hasta el entregable 1 

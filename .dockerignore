@@ -1,0 +1,14 @@
+target/
+.git/
+.idea/
+*.iml
+.vscode/
+node_modules/
+README.md
+HELP.md
+POSTMAN_GUIDE.md
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
+
