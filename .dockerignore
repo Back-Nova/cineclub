@@ -6,7 +6,7 @@ target/
 node_modules/
 README.md
 HELP.md
-POSTMAN_GUIDE.md
+POSTMAN.md
 .mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
 mvnw
