@@ -1,6 +1,6 @@
 
 
-## Eentragable 1 - Fundaciones
+## Eentragable 1 - 
 
 Este entregable incluye:
 - CRUD completo de Películas (Movie)
