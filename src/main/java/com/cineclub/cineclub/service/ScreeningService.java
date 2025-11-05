@@ -32,20 +32,20 @@ public class ScreeningService {
     
     @Transactional
     public Screening create(ScreeningRequestDto dto) {
-        // Validate dates
+        // Validar fechas
         if (dto.getHoraFin().isBefore(dto.getHoraInicio()) || dto.getHoraFin().isEqual(dto.getHoraInicio())) {
             throw new BusinessException("La hora de fin debe ser posterior a la hora de inicio");
         }
         
-        // Validate movie exists
+        // Validar que exista la película
         Movie movie = movieRepository.findById(dto.getPeliculaId())
             .orElseThrow(() -> new ResourceNotFoundException("Película no encontrada con id: " + dto.getPeliculaId()));
         
-        // Validate room exists
+        // Validar que exista la sala
         Room room = roomRepository.findById(dto.getSalaId())
             .orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada con id: " + dto.getSalaId()));
         
-        // Check for overlapping screenings in the same room
+        // Verificar solapamiento de funciones en la misma sala
         boolean hasOverlap = screeningRepository.existsOverlappingScreeningNew(
             dto.getSalaId(),
             dto.getHoraInicio(),
@@ -98,26 +98,26 @@ public class ScreeningService {
     public Screening update(Long id, ScreeningRequestDto dto) {
         Screening screening = findById(id);
         
-        // Validate dates
+        // Validar fechas
         if (dto.getHoraFin().isBefore(dto.getHoraInicio()) || dto.getHoraFin().isEqual(dto.getHoraInicio())) {
             throw new BusinessException("La hora de fin debe ser posterior a la hora de inicio");
         }
         
-        // Validate movie exists if changed
+        // Validar que exista la película si fue cambiada
         if (!screening.getPelicula().getId().equals(dto.getPeliculaId())) {
             Movie movie = movieRepository.findById(dto.getPeliculaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pelicula no encontrada con id: " + dto.getPeliculaId()));
             screening.setPelicula(movie);
         }
         
-        // Validate room exists if changed
+        // Validar que exista la sala si fue cambiada
         if (!screening.getSala().getId().equals(dto.getSalaId())) {
             Room room = roomRepository.findById(dto.getSalaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada con id: " + dto.getSalaId()));
             screening.setSala(room);
         }
         
-        // Check for overlapping screenings in the same room
+        // Verificar solapamiento de funciones en la misma sala
         boolean hasOverlap = screeningRepository.existsOverlappingScreening(
             dto.getSalaId(),
             id,

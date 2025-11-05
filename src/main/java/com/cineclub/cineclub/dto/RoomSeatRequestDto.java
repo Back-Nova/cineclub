@@ -16,7 +16,7 @@ public class RoomSeatRequestDto {
     @Positive(message = "El número de asiento debe ser positivo")
     private Integer numeroAsiento;
     
-    // Constructors
+    // Constructor
     public RoomSeatRequestDto() {}
     
     public RoomSeatRequestDto(Long salaId, String filaLabel, Integer numeroAsiento) {
@@ -25,7 +25,7 @@ public class RoomSeatRequestDto {
         this.numeroAsiento = numeroAsiento;
     }
     
-    // Getters and Setters
+    
     public Long getSalaId() {
         return salaId;
     }

@@ -20,7 +20,7 @@ public class RoomService {
     
     @Transactional
     public Room create(RoomRequestDto dto) {
-        // Check for duplicate names
+        // Verificar nombres duplicados
         roomRepository.findByNombre(dto.getNombre())
             .ifPresent(room -> {
                 throw new IllegalArgumentException("Ya existe una sala con el nombre: " + dto.getNombre());
@@ -56,7 +56,7 @@ public class RoomService {
     public Room update(Long id, RoomRequestDto dto) {
         Room room = findById(id);
         
-        // Check for duplicate names if name changed
+        // Verificar nombres duplicados si el nombre fue cambiado
         if (!room.getNombre().equals(dto.getNombre())) {
             roomRepository.findByNombre(dto.getNombre())
                 .ifPresent(r -> {

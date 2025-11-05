@@ -3,6 +3,7 @@ package com.cineclub.cineclub.controller;
 import com.cineclub.cineclub.dto.ScreeningRequestDto;
 import com.cineclub.cineclub.model.Screening;
 import com.cineclub.cineclub.service.ScreeningService;
+import com.cineclub.cineclub.service.AvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,15 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/screenings")
 public class ScreeningController {
     
     private final ScreeningService screeningService;
+    private final AvailabilityService availabilityService;
     
-    public ScreeningController(ScreeningService screeningService) {
+    public ScreeningController(ScreeningService screeningService, AvailabilityService availabilityService) {
         this.screeningService = screeningService;
+        this.availabilityService = availabilityService;
     }
     
     @PostMapping
@@ -69,6 +73,13 @@ public class ScreeningController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         screeningService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<Map<Long, String>> availability(@PathVariable Long id) {
+        Screening screening = screeningService.findById(id);
+        Map<Long, String> states = availabilityService.getSeatStates(id, screening.getSala().getId());
+        return ResponseEntity.ok(states);
     }
 }
 

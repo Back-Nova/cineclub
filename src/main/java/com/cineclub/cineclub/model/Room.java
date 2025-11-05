@@ -22,7 +22,7 @@ public class Room {
     @Column(nullable = false)
     private Integer capacidad;
     
-    // Constructors
+    // Constructor
     public Room() {}
     
     public Room(String nombre, Integer capacidad) {
@@ -30,7 +30,7 @@ public class Room {
         this.capacidad = capacidad;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }

@@ -40,7 +40,7 @@ public class Screening {
         }
     }
     
-    // Constructors
+    // Constructor
     public Screening() {}
     
     public Screening(Movie pelicula, Room sala, LocalDateTime horaInicio, LocalDateTime horaFin, String estado) {
@@ -51,7 +51,7 @@ public class Screening {
         this.estado = estado;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }

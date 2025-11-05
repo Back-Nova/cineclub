@@ -26,11 +26,11 @@ public class RoomSeatService {
     
     @Transactional
     public RoomSeat create(RoomSeatRequestDto dto) {
-        // Validate room exists
+        // Validar que la sala exista
         Room room = roomRepository.findById(dto.getSalaId())
             .orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada con id: " + dto.getSalaId()));
         
-        // Check for duplicate seat
+        // Verificar que no exista un asiento duplicado
         roomSeatRepository.findBySalaAndSeatNumber(dto.getSalaId(), dto.getFilaLabel(), dto.getNumeroAsiento())
             .ifPresent(seat -> {
                 throw new IllegalArgumentException("Ya existe un asiento " + dto.getFilaLabel() + 
@@ -65,14 +65,14 @@ public class RoomSeatService {
     public RoomSeat update(Long id, RoomSeatRequestDto dto) {
         RoomSeat seat = findById(id);
         
-        // Validate room exists if changed
+        // Validar que la sala exista si fue cambiada
         if (!seat.getSala().getId().equals(dto.getSalaId())) {
             Room room = roomRepository.findById(dto.getSalaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada con id: " + dto.getSalaId()));
             seat.setSala(room);
         }
         
-        // Check for duplicate seat
+        // Verificar que no exista un asiento duplicado
         roomSeatRepository.findBySalaAndSeatNumber(dto.getSalaId(), dto.getFilaLabel(), dto.getNumeroAsiento())
             .ifPresent(s -> {
                 if (!s.getId().equals(id)) {

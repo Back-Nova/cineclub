@@ -1,13 +1,16 @@
 package com.cineclub.cineclub.service;
 
 import com.cineclub.cineclub.dto.MovieRequestDto;
+import com.cineclub.cineclub.dto.MovieFilterDto;
 import com.cineclub.cineclub.exception.ResourceNotFoundException;
 import com.cineclub.cineclub.model.Movie;
 import com.cineclub.cineclub.repository.MovieRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.cineclub.cineclub.specification.MovieSpecifications;
 
 @Service
 public class MovieService {
@@ -20,10 +23,10 @@ public class MovieService {
     
     @Transactional
     public Movie create(MovieRequestDto dto) {
-        // Check for duplicate titles
+        // comprueba titllos duplicados
         movieRepository.findByTitulo(dto.getTitulo())
             .ifPresent(movie -> {
-                throw new IllegalArgumentException("Ya existe una pelicula con el titulo: " + dto.getTitulo());
+                throw new IllegalArgumentException("ya existe la peli con ese titulo: " + dto.getTitulo());
             });
         
         Movie movie = new Movie();
@@ -48,22 +51,28 @@ public class MovieService {
         }
         return movieRepository.searchMovies(titulo, pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Page<Movie> search(MovieFilterDto filtro, Pageable pageable) {
+        Specification<Movie> spec = MovieSpecifications.buildFromDto(filtro);
+        return movieRepository.findAll(spec, pageable);
+    }
     
     @Transactional(readOnly = true)
     public Movie findById(Long id) {
         return movieRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("pelicula no encontrada : " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("movie no encontrada con id: " + id));
     }
     
     @Transactional
     public Movie update(Long id, MovieRequestDto dto) {
         Movie movie = findById(id);
         
-        // Check for duplicate titles if title changed
+        // Comprueba titulo duplicado 
         if (!movie.getTitulo().equals(dto.getTitulo())) {
             movieRepository.findByTitulo(dto.getTitulo())
                 .ifPresent(m -> {
-                    throw new IllegalArgumentException("ya existe la pelicula con ese titulo : " + dto.getTitulo());
+                    throw new IllegalArgumentException("Ya existe una película con el título: " + dto.getTitulo());
                 });
         }
         

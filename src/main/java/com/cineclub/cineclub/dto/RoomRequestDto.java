@@ -13,7 +13,7 @@ public class RoomRequestDto {
     @Positive(message = "La capacidad debe ser positiva")
     private Integer capacidad;
     
-    // Constructors
+    // Constructor
     public RoomRequestDto() {}
     
     public RoomRequestDto(String nombre, Integer capacidad) {
@@ -21,7 +21,7 @@ public class RoomRequestDto {
         this.capacidad = capacidad;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }

@@ -27,7 +27,7 @@ public class RoomSeat {
     @Column(nullable = false)
     private Integer numeroAsiento;
     
-    // Constructors
+    // Constructor
     public RoomSeat() {}
     
     public RoomSeat(Room sala, String filaLabel, Integer numeroAsiento) {
@@ -36,7 +36,7 @@ public class RoomSeat {
         this.numeroAsiento = numeroAsiento;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }

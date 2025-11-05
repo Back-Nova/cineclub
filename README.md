@@ -1,6 +1,6 @@
 
 
-## Eentragable 1 - 
+## Entregable 1 - Fundaciones
 
 Este entregable incluye:
 - CRUD completo de Películas (Movie)
@@ -15,7 +15,7 @@ Este entregable incluye:
 
 - Java 21 (LTS)
 - Spring Boot 3.5.6
-- Spring Data JPA(Hibernate)
+- Spring Data JPA (Hibernate)
 - PostgreSQL 15
 - Flyway (Migraciones de base de datos)
 - Spring Security
@@ -26,7 +26,7 @@ Este entregable incluye:
 
 ## Instalación
 
-### Opción 1: Docker 
+### Opción 1: Docker
 
 Para dockerizar todo el proyecto:
 
@@ -43,7 +43,7 @@ docker compose down
 
 La aplicación estará disponible en: `http://localhost:8080`
 
-### Opción 2: Desarrollo 
+### Opción 2: Desarrollo Local 
 
 ### 1. Levantar solo la base de datos
 
@@ -73,6 +73,15 @@ Esto creará un contenedor PostgreSQL con:
 - `POST /api/movies` - Crear nueva película
 - `PUT /api/movies/{id}` - Actualizar película
 - `DELETE /api/movies/{id}` - Eliminar película
+- `POST /api/movies/search` - Buscar con filtros dinamicos (Specification + paginado)
+```json
+{
+  "titulo": "matrix",
+  "duracionMinima": 90,
+  "duracionMaxima": 150
+}
+```
+- `GET /api/movies/search` - Buscar con filtros dinámicos por query params (Specification + paginado)
 
 ### Salas (`/api/rooms`)
 
@@ -103,13 +112,29 @@ Esto creará un contenedor PostgreSQL con:
 - `PUT /api/screenings/{id}` - Actualizar función
 - `DELETE /api/screenings/{id}` - Eliminar función
 
-## Ejemplos de Uso
+## Entregable 2 - Disponibilidad y ciclo de tickets
+
+Este entregable incluye:
+- Disponibilidad de asientos por función con estados: AVAILABLE | HELD | SOLD
+- Ciclo de tickets: creación de hold (TTL), confirmación de compra, cancelación
+- Reglas de negocio: límites por usuario, umbral previo a función, ownership
+- Endpoints protegidos por usuario (simulados vía header `X-User-Id` en dev)
+
+### Endpoints (Entregable 2)
+
+- `GET /api/screenings/{id}/availability` - Disponibilidad de asientos (AVAILABLE | HELD | SOLD)
+- `POST /api/screenings/{id}/holds` - Crear hold (X-User-Id requerido)
+- `POST /api/tickets/{ticketId}/confirm` - Confirmar compra (X-User-Id requerido)
+- `DELETE /api/tickets/{ticketId}` - Cancelar hold propio (X-User-Id requerido)
+- `GET /api/me/tickets` - Listar tickets/holds del usuario (X-User-Id requerido)
+
+## Ejemplos 
 
 ### 1. Crear una Película
 
 ```json
 POST http://localhost:8080/api/movies
-
+Content-Type: application/json
 
 {
   "titulo": "The Dark Knight",
@@ -124,7 +149,7 @@ POST http://localhost:8080/api/movies
 
 ```json
 POST http://localhost:8080/api/rooms
-
+Content-Type: application/json
 
 {
   "nombre": "Sala 1",
@@ -136,9 +161,10 @@ POST http://localhost:8080/api/rooms
 
 ```json
 POST http://localhost:8080/api/rooms/1/seats
-
+Content-Type: application/json
 
 {
+        "salaId":1,
   "filaLabel": "A",
   "numeroAsiento": 1
 }
@@ -148,7 +174,7 @@ POST http://localhost:8080/api/rooms/1/seats
 
 ```json
 POST http://localhost:8080/api/screenings
-
+Content-Type: application/json
 
 {
   "peliculaId": 1,
@@ -157,6 +183,83 @@ POST http://localhost:8080/api/screenings
   "horaFin": "2024-12-01T21:30:00",
   "estado": "ACTIVA"
 }
+```
+
+### 5. Buscar Películas con Specification (filtros dinámicos + paginado)
+
+```json
+POST http://localhost:8080/api/movies/search?page=0&size=10&sort=titulo,asc
+Content-Type: application/json
+
+{
+  "titulo": "matrix",
+  "sinopsis": "",
+  "duracionMinima": 90,
+  "duracionMaxima": 150,
+  "clasificacionEdad": "PG-13",
+  "fechaDesde": "1995-01-01",
+  "fechaHasta": "2005-12-31"
+}
+```
+
+### 6. Buscar Películas con Specification usando GET 
+
+```bash
+GET http://localhost:8080/api/movies/search?titulo=matrix&duracionMinima=90&duracionMaxima=150&clasificacionEdad=PG-13&fechaDesde=1995-01-01&fechaHasta=2005-12-31&page=0&size=10&sort=titulo,asc
+```
+
+### 7. Disponibilidad de asientos
+
+```bash
+GET http://localhost:8080/api/screenings/1/availability
+```
+
+Respuesta (200):
+```json
+{
+  "screeningId": 1,
+  "seats": [
+    { "seatId": 101, "fila": "A", "numero": 1, "estado": "DISPONIBLE" },
+    { "seatId": 102, "fila": "A", "numero": 2, "estado": "RESERVADA" },
+    { "seatId": 103, "fila": "A", "numero": 3, "estado": "VENDIDA" }
+  ]
+}
+```
+
+### 8. Crear hold (reserva temporal) 
+
+```json
+POST http://localhost:8080/api/screenings/1/holds
+X-User-Id: 42
+Content-Type: application/json
+
+{
+  "seatIds": [101, 102],
+  "ttlSeconds": 300
+}
+```
+
+### 9. Confirmar compra
+
+```bash
+POST http://localhost:8080/api/tickets/555/confirm
+X-User-Id: 42
+```
+
+### 10. Cancelar hold
+
+```bash
+DELETE http://localhost:8080/api/tickets/id_ticker
+X-User-Id: 42
+```
+
+http://localhost:8080/api/screenings/1/availability
+
+### 11. Mis tickets
+
+```bash
+GET http://localhost:8080/api/me/tickets?page=0&size=10&sort=purchasedAt,desc
+X-User-Id: 42
 ```
 
 
@@ -194,11 +297,3 @@ docker compose ps
 docker compose down -v
 docker compose up -d --build
 ```
-# Para finalizar se puede hacer 
- primero 
- 
-### docker compose down
-segundo 
-
-### docker compose up -d --build 
-y ya se podra probar toda la app hasta el entregable 1 

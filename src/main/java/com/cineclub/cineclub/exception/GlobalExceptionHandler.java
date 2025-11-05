@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
-    // DTO for error responses
+    // DTO de respuesta de error
     public static class ErrorResponse {
         private LocalDateTime timestamp;
         private int status;
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
             this.path = path;
         }
         
-        // Getters and Setters
+        // Getters y Setters
         public LocalDateTime getTimestamp() {
             return timestamp;
         }

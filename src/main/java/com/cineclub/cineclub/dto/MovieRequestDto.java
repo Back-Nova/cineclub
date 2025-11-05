@@ -7,20 +7,20 @@ import java.time.LocalDate;
 
 public class MovieRequestDto {
     
-    @NotBlank(message = "El título es obligatorio")
+    @NotBlank(message = "El ttulo es obligatorio")
     private String titulo;
     
     private String sinopsis;
     
-    @NotNull(message = "La duración es obligatoria")
-    @Positive(message = "La duración debe ser positiva")
+    @NotNull(message = "La durac es obligatoria")
+    @Positive(message = "La duracn debe ser positiva")
     private Integer duracionMinutos;
     
     private String clasificacionEdad;
     
     private LocalDate fechaEstreno;
     
-    // Constructors
+    // 
     public MovieRequestDto() {}
     
     public MovieRequestDto(String titulo, String sinopsis, Integer duracionMinutos, String clasificacionEdad, LocalDate fechaEstreno) {
@@ -31,7 +31,7 @@ public class MovieRequestDto {
         this.fechaEstreno = fechaEstreno;
     }
     
-    // Getters and Setters
+    // 
     public String getTitulo() {
         return titulo;
     }

@@ -18,8 +18,8 @@ public class ScreeningRequestDto {
     private LocalDateTime horaFin;
     
     private String estado;
-    
-    // Constructors
+
+    // Constructor
     public ScreeningRequestDto() {}
     
     public ScreeningRequestDto(Long peliculaId, Long salaId, LocalDateTime horaInicio, LocalDateTime horaFin, String estado) {
@@ -30,7 +30,7 @@ public class ScreeningRequestDto {
         this.estado = estado;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public Long getPeliculaId() {
         return peliculaId;
     }

@@ -31,7 +31,7 @@ public class Movie {
     
     private LocalDate fechaEstreno;
     
-    // Constructors
+    // Constructor
     public Movie() {}
     
     public Movie(String titulo, String sinopsis, Integer duracionMinutos, String clasificacionEdad, LocalDate fechaEstreno) {
@@ -42,7 +42,7 @@ public class Movie {
         this.fechaEstreno = fechaEstreno;
     }
     
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }

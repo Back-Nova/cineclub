@@ -4,6 +4,7 @@ import com.cineclub.cineclub.model.Screening;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface ScreeningRepository extends JpaRepository<Screening, Long> {
+public interface ScreeningRepository extends JpaRepository<Screening, Long>, JpaSpecificationExecutor<Screening> {
     
     Page<Screening> findByPeliculaId(Long peliculaId, Pageable pageable);
     
@@ -25,7 +26,7 @@ public interface ScreeningRepository extends JpaRepository<Screening, Long> {
         Pageable pageable
     );
     
-    // Check for overlapping screenings in the same room
+    // Compruebe si hay proyecciones  en la misma sala 
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Screening s " +
            "WHERE s.sala.id = :salaId " +
            "AND s.id != :screeningId " +
@@ -37,7 +38,7 @@ public interface ScreeningRepository extends JpaRepository<Screening, Long> {
         @Param("horaFin") LocalDateTime horaFin
     );
     
-    // For new screenings (no id)
+    // Fpara nueva proyeccion 
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Screening s " +
            "WHERE s.sala.id = :salaId " +
            "AND ((s.horaInicio <= :horaFin AND s.horaFin >= :horaInicio))")
