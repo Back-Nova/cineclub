@@ -1,4 +1,4 @@
--- Esquema para tickets y reservas temporales (holds)
+-- Esquema para la 2 entrega
 
 CREATE TABLE IF NOT EXISTS ticket (
     id              BIGSERIAL PRIMARY KEY,
